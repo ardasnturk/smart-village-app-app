@@ -4,7 +4,12 @@ import { LocationObject } from 'expo-location';
 import React, { useCallback, useContext, useState } from 'react';
 import { useQuery } from 'react-apollo';
 import { ActivityIndicator, ScrollView, View } from 'react-native';
-import { MapMarker, WebviewLeafletMessage } from 'react-native-webview-leaflet';
+import {
+  AnimationType,
+  INFINITE_ANIMATION_ITERATIONS,
+  MapMarker,
+  WebviewLeafletMessage
+} from 'react-native-webview-leaflet';
 
 import { colors, texts } from '../../config';
 import { graphqlFetchPolicy } from '../../helpers';
@@ -98,15 +103,20 @@ export const LocationOverview = ({
 
   const mapMarkers = mapToMapMarkers(overviewData);
 
-  position &&
-    mapMarkers?.push({
-      icon: ownLocation(colors.accent),
-      iconAnchor: ownLocationIconAnchor,
-      position: {
-        lat: position.coords.latitude,
-        lng: position.coords.longitude
-      }
-    });
+  const ownPositionMarker = position && {
+    icon: ownLocation(colors.accent),
+    size: ownLocationIconAnchor,
+    position: {
+      lat: position.coords.latitude,
+      lng: position.coords.longitude
+    },
+    animation: {
+      type: AnimationType.BOUNCE,
+      duration: 1,
+      delay: 0,
+      iterationCount: INFINITE_ANIMATION_ITERATIONS
+    }
+  };
 
   if (!mapMarkers?.length) {
     return (
@@ -120,7 +130,11 @@ export const LocationOverview = ({
     <SafeAreaViewFlex>
       <ScrollView>
         <WrapperWithOrientation>
-          <WebViewMap locations={mapMarkers} onMessageReceived={onMessageReceived} />
+          <WebViewMap
+            locations={mapMarkers}
+            ownPositionMarker={ownPositionMarker}
+            onMessageReceived={onMessageReceived}
+          />
           <View>
             {!selectedPointOfInterest && (
               <Wrapper>

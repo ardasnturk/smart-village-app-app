@@ -1,12 +1,14 @@
 import React, { useCallback } from 'react';
 import { StyleProp, StyleSheet, View, ViewStyle } from 'react-native';
 import { MapMarker, WebViewLeaflet, WebviewLeafletMessage } from 'react-native-webview-leaflet';
+import { OwnPositionMarker } from 'react-native-webview-leaflet/models';
 
 import { colors } from '../../config';
 import { imageHeight, imageWidth } from '../../helpers';
 
 type Props = {
   locations?: MapMarker[];
+  ownPositionMarker?: OwnPositionMarker;
   mapCenterPosition?: {
     lat: number;
     lng: number;
@@ -18,6 +20,7 @@ type Props = {
 
 export const WebViewMap = ({
   locations,
+  ownPositionMarker,
   mapCenterPosition,
   onMessageReceived,
   style,
@@ -44,6 +47,7 @@ export const WebViewMap = ({
           }
         ]}
         mapMarkers={locations}
+        ownPositionMarker={ownPositionMarker}
         mapCenterPosition={mapCenterPosition ?? locations?.[0]?.position}
         zoom={zoom}
       />
